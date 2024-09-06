@@ -23,10 +23,16 @@ The LAB method is driven by taxonomies, which are largely created manually and
 with care.
 
 This repository contains a taxonomy tree that allows you to create models
-tuned with your data (enhanced via synthetic data generation) using LAB 🐶
+tuned with your data (enhanced via synthetic data generation) using the LAB 🐶
 method.
 
 [1] Shivchander Sudalairaj*, Abhishek Bhandwaldar*, Aldo Pareja*, Kai Xu, David D. Cox, Akash Srivastava*. "LAB: Large-Scale Alignment for ChatBots", arXiv preprint arXiv: 2403.01081, 2024. (* denotes equal contributions)
+
+## Choosing domains for the taxonomy
+
+In general, we use the Dewey Decimal Classification (DDC) System to determine our domains (and subdomains) in the taxonomy. This [DDC SUMMARIES document](https://www.oclc.org/content/dam/oclc/dewey/resources/summaries/deweysummaries.pdf) is a great resource for determining where a topic might be classified.
+
+If you are unsure where to put your knowledge or compositional skill, create a folder in the `miscellaneous_unknown` folder under the `knowledge` or `compositional_skills` folders.
 
 ## Learning
 
@@ -53,7 +59,9 @@ Your skills contribution pull requests must include the following:
 > There is a limit to how much content can exist in the question/answer pairs for the model to process. Due to this, only add a maximum
 > of around 2300 words to your question and answer seed example pairs in the `qna.yaml` file.
 
-Taxonomy skill files must be a valid [YAML](https://yaml.org/) file named `qna.yaml`. Each `qna.yaml` files contains a set of key/value entries with the following keys:
+Compositional skills can either be grounded (includes a context) or ungrounded (does not include a context).  Grounded or ungrounded is declared in the taxonomy tree, for example: `linguistics/writing/poetry/haiku/` (ungrounded) or `grounded/linguistics/grammar` (grounded). The `qna.yaml` is in the final node.
+
+Taxonomy skill files must be a valid [YAML](https://yaml.org/) file named `qna.yaml`. Each `qna.yaml` file contains a set of key/value entries with the following keys:
 
 - `version`: The value must be the number 2. **Required**
 - `task_description`: A description of the skill. **Required**
@@ -61,7 +69,7 @@ Taxonomy skill files must be a valid [YAML](https://yaml.org/) file named `qna.y
 - `seed_examples`: A collection of key/value entries. New
   submissions should have at least five entries, although
   older files may have fewer. **Required**
-  - `context`: Grounded skills require the user to provide context containing information that the model is expected to take into account during processing. This is different from knowledge, where the model is expected to gain facts and background knowledge from the tuning process. The context key is optional for freeform skills.
+  - `context`: Grounded skills require the user to provide context containing information that the model is expected to take into account during processing. This is different from knowledge, where the model is expected to gain facts and background knowledge from the tuning process. The context key should not be used for ungrounded skills.
   - `question`: A question for the model. **Required**
   - `answer`: The desired response from the model. **Required**
 
@@ -90,7 +98,7 @@ seed_examples:
   ...
 ```
 
-Then, you create an `attribution.txt` file that includes the sources of your information. These can also be self authored.
+Then, you create an `attribution.txt` file that includes the sources of your information. These can also be self authored sources.
 
 *Example `attribution.txt`*
 
@@ -122,9 +130,9 @@ If you have not written YAML before, don't be intimidated - it's just text.
   value, unless "Yes" is quoted.)
 > - See https://yaml-multiline.info/ for more info.
 
-It is recommended that you **lint**, or verify your YAML using a tool. One linter option is [yamllint.com](https://yamllint.com). You can copy/paste your YAML into the box and click **Go** to have it analyze your YAML and make recommendations. Online tools like [prettified](https://onlineyamltools.com/prettify-yaml) and [yaml-validator](https://jsonformatter.org/yaml-validator) can automatically reformat your YAML to adhere to our `yamllint` PR checks, such as breaking lines longer than 120 characters.
+It is recommended that you **lint**, or verify, your YAML using a tool. One linter option is [yamllint.com](https://yamllint.com). You can copy/paste your YAML into the box and click **Go** to have it analyze your YAML and make recommendations. Online tools like [prettified](https://onlineyamltools.com/prettify-yaml) and [yaml-validator](https://jsonformatter.org/yaml-validator) can automatically reformat your YAML to adhere to our `yamllint` PR checks, such as breaking lines longer than 120 characters.
 
-#### Freeform compositional skill: YAML example
+#### Ungrounded compositional skill: YAML example
 
 ```yaml
 version: 2
@@ -149,23 +157,23 @@ Here is the location of this YAML in the taxonomy tree. Note that the YAML file
 itself, plus any added directories that contain the file, is the entirety of the skill
 in terms of a taxonomy contribution:
 
-#### Freeform compositional skill: Directory tree example
+#### Ungrounded compositional skill: Directory tree example
 
 ```ascii
 [...]
 
 └── writing
-    └── freeform
-    |   └── haikus <=== here it is :)
+    └── poetry
+    |   └── haiku <=== here it is :)
     |   |   └── qna.yaml
     |   |       attribution.txt
-    │   ├── debate
-    │   │   └── qna.yaml
+        [...]
+    └── prose
+    |   └── debate
+    |   |   └── qna.yaml
     |   |       attribution.txt
-    │   ├── legal
-    │   │   ├── agreement
-    │   │   |    └── qna.yaml
-    |   |   |        attribution.txt
+    [...]
+
 [...]
 ```
 
@@ -221,22 +229,21 @@ seed_examples:
 ```ascii
 [...]
 
-└── extraction
-    └── inference
-    |   └── qualitative
-    |   |    ├── sentiment
-    |   |    |    └── qna.yaml
-    |   |    |        attribution.txt
-    |   |    └── tone_and_style
-    |   |         └── qna.yaml
-    |   |             attribution.txt
-    │   ├── quantitative
-    │   │   ├── table_analysis <=== here it is :)
-    │   |   |    └── qna.yaml
-    │   │   │        attribution.txt
-    │   │   ├── word_frequency
-    │   │   │   └── qna.yaml
-    │   │   │       attribution.txt
+grounded
+└── technology
+    └── machine_learning
+        └── natural_language_processing
+    |   |     └── information_extraction
+    |            └── inference
+    |   |            └── qualitative
+    |   |               ├── sentiment
+    |   |               |     └── qna.yaml
+    |   |               |         attribution.txt
+    │                   ├── quantitative
+    │   │                   ├── table_analysis <=== here it is :)
+    │   |   |               |     └── qna.yaml
+    │   │   │               |         attribution.txt
+
 [...]
 ```
 
@@ -244,6 +251,8 @@ seed_examples:
 
 While skills are foundational or performative, knowledge is based more on answering questions that involve facts,
 data, or references.
+
+Knowledge is supported by documents, such as a textbook, technical manual, encyclopedia, journal, or magazine.
 
 Knowledge in the taxonomy tree consists of a few more elements than skills:
 
@@ -260,7 +269,7 @@ Knowledge in the taxonomy tree consists of a few more elements than skills:
 
 The `qna.yaml` format must include the following fields:
 
-- `version`: The chache verion of the qna.yaml file, this is the format of the file used for SDG. The value must be the number 3.
+- `version`: The version of the qna.yaml file, this is the format of the file used for SDG. The value must be the number 3.
 - `created_by`: Your GitHub username.
 - `domain`: Specify the category of the knowledge.
 - `seed_examples`: A collection of key/value entries.
@@ -282,13 +291,20 @@ domain: astronomy
 created_by: juliadenham
 seed_examples:
   - context: |
-      **Phoenix** is a minor constellation in the southern sky. Named after the mythical
-      phoenix, it was first depicted on a celestial atlas by Johann Bayer in his 1603
-      *Uranometria*. The French explorer and astronomer Nicolas Louis de
-      Lacaille charted the brighter stars and gave their Bayer designations
+      **Phoenix** is a minor [constellation](constellation "wikilink") in the
+      [southern sky](southern_sky "wikilink"). Named after the mythical
+      [phoenix](Phoenix_(mythology) "wikilink"), it was first depicted on a
+      celestial atlas by [Johann Bayer](Johann_Bayer "wikilink") in his 1603
+      *[Uranometria](Uranometria "wikilink")*. The French explorer and
+      astronomer [Nicolas Louis de
+      Lacaille](Nicolas_Louis_de_Lacaille "wikilink") charted the brighter
+      stars and gave their [Bayer designations](Bayer_designation "wikilink")
       in 1756. The constellation stretches from roughly −39 degrees to −57 degrees
-      declination, and from 23.5h to 2.5h of right ascension. The constellations Phoenix,
-      Grus, Pavo, are known as the Southern Birds.
+      [declination](declination "wikilink"), and from 23.5h to 2.5h of [right
+      ascension](right_ascension "wikilink"). The constellations Phoenix,
+      [Grus](Grus_(constellation) "wikilink"),
+      [Pavo](Pavo_(constellation) "wikilink") and [Tucana](Tucana "wikilink"),
+      are known as the Southern Birds.
     questions_and_answers:
       - question: |
           What is the Phoenix constellation?
@@ -305,16 +321,22 @@ seed_examples:
           The phoenix constellation stretches from roughly −39° to −57°
           declination, and from 23.5h to 2.5h of right ascension.
   - context: |
-      Phoenix was the largest of the 12 constellations established by Petrus
-      Plancius from the observations of Pieter Dirkszoon Keyser and Frederick de
-      Houtman. It first appeared on a 35cm diameter celestial globe published
-      in 1597 (or 1598) in Amsterdam by Plancius with Jodocus Hondius. The first
-      depiction of this constellation in a celestial atlas was in Johann Bayer's
-      *Uranometria* of 1603. De Houtman included it in his southern star catalog
-      the same year under the Dutch name *Den voghel Fenicx*, "The Bird Phoenix",
-      symbolising the phoenix of classical mythology. One name of the brightest star Alpha
-      Phoenicis—Ankaa—is derived from the Arabic: العنقاء, romanized: al-‘anqā’,
-      lit. 'the phoenix', and was coined sometime after 1800 in relation to the constellation.
+      Phoenix was the largest of the 12 constellations established by [Petrus
+      Plancius](Petrus_Plancius "wikilink") from the observations of [Pieter
+      Dirkszoon Keyser](Pieter_Dirkszoon_Keyser "wikilink") and [Frederick de
+      Houtman](Frederick_de_Houtman "wikilink"). It first appeared on a 35cm
+      diameter celestial globe published in 1597 (or 1598) in Amsterdam by
+      Plancius with [Jodocus Hondius](Jodocus_Hondius "wikilink"). The first
+      depiction of this constellation in a celestial atlas was in [Johann
+      Bayer](Johann_Bayer "wikilink")'s
+      *[Uranometria](Uranometria "wikilink")* of 1603. De Houtman included
+      it in his southern star catalog the same year under the Dutch name *Den
+      voghel Fenicx*, "The Bird Phoenix", symbolising the
+      [phoenix](Phoenix_(mythology) "wikilink") of classical mythology. One
+      name of the brightest star [Alpha
+      Phoenicis](Alpha_Phoenicis "wikilink")—Ankaa—is derived from the Arabic:
+      العنقاء, romanized: al-‘anqā’, lit. 'the phoenix', and
+      was coined sometime after 1800 in relation to the constellation.
     questions_and_answers:
       - question: |
           What is the brightest star in the Phoenix constellation
@@ -332,21 +354,32 @@ seed_examples:
         answer: |
           "The Bird Phoenix" symbolizes the phoenix of classical mythology.
   - context: |
-      Phoenix is a small constellation bordered by Fornax and Sculptor to the north,
-      Grus to the west, Tucana to the south, touching on the corner of Hydrus to the
-      south, and Eridanus to the east and southeast. The bright star Achernar is
-      nearby. The three-letter abbreviation for the constellation, as adopted by the
-      International Astronomical Union in 1922, is "Phe". The official constellation
-      boundaries, as set by Belgian astronomer Eugène Delporte in 1930,
-      are defined by a polygon of 10 segments. In the equatorial coordinate system, the right
-      ascension coordinates of these borders lie between 23h 26.5m and 02h 25.0m,
-      while the declination coordinates are between −39.31° and −57.84°. This means it remains
-      below the horizon to anyone living north of the 40th parallel in the Northern
-      Hemisphere, and remains low in the sky for anyone living north of the equator.
-      It is most visible from locations such as Australia and South Africa during
-      late Southern Hemisphere spring. Most of the constellation lies within, and
-      can be located by, forming a triangle of the bright stars Achernar, Fomalhaut
-      and Beta Ceti—Ankaa lies roughly in the centre of this.
+      Phoenix is a small constellation bordered by [Fornax](Fornax "wikilink")
+      and Sculptor to the north, Grus to the west, Tucana to the south,
+      touching on the corner of [Hydrus](Hydrus "wikilink") to the south, and
+      [Eridanus](Eridanus_(constellation) "wikilink") to the east and
+      southeast. The bright star [Achernar](Achernar "wikilink") is
+      nearby. The three-letter abbreviation for the constellation, as
+      adopted by the [International Astronomical
+      Union](International_Astronomical_Union "wikilink") in 1922, is
+      "Phe". The official constellation boundaries, as set by Belgian
+      astronomer [Eugène Delporte](Eugène_Joseph_Delporte "wikilink") in 1930,
+      are defined by a polygon of 10 segments. In the [equatorial coordinate
+      system](equatorial_coordinate_system "wikilink"), the [right
+      ascension](right_ascension "wikilink") coordinates of these borders lie
+      between 23<sup>h</sup> 26.5<sup>m</sup> and 02<sup>h</sup> 25.0<sup>m</sup>,
+      while the [declination](declination "wikilink")
+      coordinates are between −39.31° and −57.84°. This means it remains
+      below the horizon to anyone living north of the [40th
+      parallel](40th_parallel_north "wikilink") in the [Northern
+      Hemisphere](Northern_Hemisphere "wikilink"), and remains low in the sky
+      for anyone living north of the [equator](equator "wikilink"). It is most
+      visible from locations such as Australia and South Africa during late
+      [Southern Hemisphere](Southern_Hemisphere "wikilink") spring. Most
+      of the constellation lies within, and can be located by, forming a
+      triangle of the bright stars Achernar, [Fomalhaut](Fomalhaut "wikilink")
+      and [Beta Ceti](Beta_Ceti "wikilink")—Ankaa lies roughly in the centre
+      of this.
     questions_and_answers:
       - question: What are the characteristics of the Phoenix constellation?
         answer: |
@@ -367,17 +400,22 @@ seed_examples:
           segments.
   - context: |
       Ten stars have been found to have planets to date, and four planetary
-      systems have been discovered with the SuperWASP project. HD 142 is a yellow
-      giant that has an apparent magnitude of 5.7, and has a planet HD 142b 1.36
-      times the mass of Jupiter which orbits every 328 days.  HD 2039 is a yellow
-      subgiant with an apparent magnitude of 9.0 around 330 light years away which
-      has a planet HD 2039 b six times the mass of Jupiter. WASP-18 is a star of
-      magnitude 9.29 which was discovered to have a hot Jupiter-like planet taking
-      less than a day to orbit the star. The planet is suspected to be causing WASP-18 to
-      appear older than it really is. WASP-4 and WASP-5 are solar-type yellow stars around 1000
-      light years distant and of 13th magnitude, each with a single planet larger
-      than Jupiter. WASP-29 is an orange dwarf of spectral type K4V and visual magnitude
-      11.3, which has a planetary companion of similar size and mass to Saturn. The planet
+      systems have been discovered with the [SuperWASP](SuperWASP "wikilink")
+      project. [HD 142](HD_142 "wikilink") is a yellow giant that has an
+      apparent magnitude of 5.7, and has a planet ([HD 142b](HD_142_b
+      "wikilink")) 1.36 times the mass of Jupiter which orbits every 328 days.
+      [HD 2039](HD_2039 "wikilink") is a yellow subgiant with an apparent
+      magnitude of 9.0 around 330 light years away which has a planet ([HD 2039
+      b](HD_2039_b "wikilink")) six times the mass of Jupiter. [WASP-18](WASP-18
+      "wikilink") is a star of magnitude 9.29 which was discovered to have a hot
+      Jupiter-like planet ([WASP-18b](WASP-18b "wikilink")) taking less than a
+      day to orbit the star. The planet is suspected to be causing WASP-18 to
+      appear older than it really is. [WASP-4](WASP-4 "wikilink") and
+      [WASP-5](WASP-5 "wikilink") are solar-type yellow stars around 1000
+      light years distant and of 13th magnitude, each with a single planet
+      larger than Jupiter. [WASP-29](WASP-29 "wikilink") is an orange
+      dwarf of spectral type K4V and visual magnitude 11.3, which has a
+      planetary companion of similar size and mass to Saturn. The planet
       completes an orbit every 3.9 days.
     questions_and_answers:
       - question: In the Phoenix constellation, how many stars have planets?
@@ -398,20 +436,31 @@ seed_examples:
           years distant and of 13th magnitude, each with a single planet
           larger than Jupiter.
   - context: |
-      The constellation does not lie on the galactic plane of the Milky Way, and there
-      are no prominent star clusters. NGC 625 is a dwarf irregular galaxy of apparent magnitude 11.0
+      The constellation does not lie on the
+      [galactic plane](galactic_plane "wikilink") of the Milky Way, and there
+      are no prominent star clusters. [NGC 625](NGC_625 "wikilink") is a dwarf
+      [irregular galaxy](irregular_galaxy "wikilink") of apparent magnitude 11.0
       and lying some 12.7 million light years distant. Only 24000 light years in
-      diameter, it is an outlying member of the Sculptor Group. NGC 625 is
-      thought to have been involved in a collision and is experiencing a burst
-      of active star formation. NGC 37 is a lenticular galaxy of apparent magnitude
-      14.66. It is approximately 42 kiloparsecs in diameter and about 12.9 billion years old.
-      Robert's Quartet , and three spiral galaxies NGC 88 and NGC 92) is a group of
-      four galaxies located around 160 million light-years away which are in the process of colliding
-      and merging. They are within a circle of radius of 1.6 arcmin, corresponding to about
-      75,000 light-years. Located in the galaxy ESO 243-49 is HLX-1, an intermediate-mass
-      black hole intermediate-mass_black_hole —the first one of its kind identified.
-      It is thought to be a remnant of a dwarf galaxy that was absorbed in a collision
-      with ESO 243-49. Before its discovery, this class of black hole was only hypothesized.
+      diameter, it is an outlying member of the [Sculptor Group](Sculptor_Group
+      "wikilink"). NGC 625 is thought to have been involved in a collision and
+      is experiencing a burst of [active star formation](Active_galactic_nucleus
+      "wikilink"). [NGC 37](NGC_37 "wikilink") is a
+      [lenticular galaxy](lenticular_galaxy "wikilink") of apparent magnitude
+      14.66. It is approximately 42 [kiloparsecs](kiloparsecs "wikilink")
+      (137,000 [light-years](light-years "wikilink")) in diameter and about
+      12.9 billion years old. [Robert's Quartet](Robert's_Quartet "wikilink")
+      (composed of the irregular galaxy [NGC 87](NGC_87 "wikilink"), and three
+      spiral galaxies [NGC 88](NGC_88 "wikilink"), [NGC 89](NGC_89 "wikilink")
+      and [NGC 92](NGC_92 "wikilink")) is a group of four galaxies located
+      around 160 million light-years away which are in the process of colliding
+      and merging. They are within a circle of radius of 1.6 arcmin,
+      corresponding to about 75,000 light-years. Located in the galaxy ESO
+      243-49 is [HLX-1](HLX-1 "wikilink"), an
+      [intermediate-mass black hole](intermediate-mass_black_hole
+      "wikilink")—the first one of its kind identified. It is thought to be a
+      remnant of a dwarf galaxy that was absorbed in a
+      [collision](Interacting_galaxy "wikilink") with ESO 243-49. Before its
+      discovery, this class of black hole was only hypothesized.
     questions_and_answers:
       - question: |
           Is the Phoenix Constellation part of the Milky Way?
@@ -432,10 +481,11 @@ document_outline: |
   Information about the Phoenix Constellation including the
   history, characteristics, and features of the stars in the constellation.
 document:
-    repo: https://github.com/juliadenham/Summit_knowledge
-    commit: 0a1f2672b9b90582e6115333e3ed62fd628f1c0f
-    patterns:
-      - phoenix_constellation.md
+  repo: https://github.com/juliadenham/Summit_knowledge
+  commit: 0a1f2672b9b90582e6115333e3ed62fd628f1c0f
+  patterns:
+    - phoenix_constellation.md
+
 ```
 
 *Example `attribution.txt` file*
@@ -463,21 +513,37 @@ snippet of `phoenix_constellation.md` might look like in your Git repository.
 ```markdown
 # Phoenix (constellation)
 
-**Phoenix** is a minor constellation in the southern sky. Named after the mythical
-phoenix, it was first depicted on a celestial atlas by Johann Bayer in his 1603
-*Uranometria*. The French explorer and astronomer Nicolas Louis de
-Lacaille charted the brighter stars and gave their Bayer designations
+**Phoenix** is a minor [constellation](constellation "wikilink") in the
+[southern sky](southern_sky "wikilink"). Named after the mythical
+[phoenix](Phoenix_(mythology) "wikilink"), it was first depicted on a
+celestial atlas by [Johann Bayer](Johann_Bayer "wikilink") in his 1603
+*[Uranometria](Uranometria "wikilink")*. The French explorer and
+astronomer [Nicolas Louis de
+Lacaille](Nicolas_Louis_de_Lacaille "wikilink") charted the brighter
+stars and gave their [Bayer designations](Bayer_designation "wikilink")
 in 1756. The constellation stretches from roughly −39 degrees to −57 degrees
-declination, and from 23.5h to 2.5h of right ascension. The constellations Phoenix,
-Grus, Pavo, are known as the Southern Birds.
+[declination](declination "wikilink"), and from 23.5h to 2.5h of [right
+ascension](right_ascension "wikilink"). The constellations Phoenix,
+[Grus](Grus_(constellation) "wikilink"),
+[Pavo](Pavo_(constellation) "wikilink") and [Tucana](Tucana "wikilink"),
+are known as the Southern Birds.
 
-The brightest star, Alpha Phoenicis, is named Ankaa, an Arabic word meaning 'the Phoenix'.
-It is an orange giant of apparent magnitude 2.4. Next is Beta Phoenicis, actually a
-binary system composed of two yellow giants with a combined apparent magnitude of 3.3. Nu
-Phoenicis has a dust disk, while the constellation has ten star systems with known planets and the recently
-discovered galaxy clusters El Gordo and the Phoenix
-Cluster—located 7.2 and 5.7 billion light years away respectively, two of the largest objects in the visible
-universe. Phoenix is the radiant of two annual meteor showers: the Phoenicids in December, and the July
+The brightest star, [Alpha Phoenicis](Alpha_Phoenicis "wikilink"), is
+named Ankaa, an [Arabic](Arabic "wikilink") word meaning 'the Phoenix'.
+It is an orange giant of apparent magnitude 2.4. Next is [Beta
+Phoenicis](Beta_Phoenicis "wikilink"), actually a
+[binary](Binary_star "wikilink") system composed of two yellow giants
+with a combined apparent magnitude of 3.3. [Nu
+Phoenicis](Nu_Phoenicis "wikilink") has a dust disk, while the
+constellation has ten star systems with known planets and the recently
+discovered [galaxy clusters](galaxy_cluster "wikilink") [El
+Gordo](El_Gordo_(galaxy_cluster) "wikilink") and the [Phoenix
+Cluster](Phoenix_Cluster "wikilink")—located 7.2 and 5.7 billion light
+years away respectively, two of the largest objects in the [visible
+universe](visible_universe "wikilink"). Phoenix is the
+[radiant](radiant_(meteor_shower) "wikilink") of two annual [meteor
+showers](meteor_shower "wikilink"): the
+[Phoenicids](Phoenicids "wikilink") in December, and the July
 Phoenicids.
 ```
 
@@ -512,48 +578,34 @@ each branch, there is a YAML file (qna.yaml) that contains the examples for that
 domain. Maintainers can decide to change the names of the existing branches or to add new branches.
 
 > [!IMPORTANT]
-> Folder names do not have spaces.
+> Folder names do not have spaces. Use underscores between words.
 
 Below is an illustrative directory structure to show this layout:
 
 ```ascii
 .
-└── writing
-    ├── freeform
+└── linguistics
+    ├── writing
     │   ├── brainstorming
     │   │   ├── idea_generation
-    │   │   │   └── qna.yaml
-    │   │   │       attribution.txt
+    |   │       └── qna.yaml
+    │   │           attribution.txt
     │   │   ├── refute_claim
-    │   │   │   └── qna.yaml
-    │   │   │       attribution.txt
+    |   │       └── qna.yaml
+    │   │           attribution.txt
     │   ├── prose
     │   │   ├── articles
-    │   │   │   └── qna.yaml
-    │   │   │       attribution.txt
-    │   │   ├── emails
-    │   │   │   ├── formal
-    │   │   │   │   └── qna.yaml
-    │   │   │   │       attribution.txt
-    │   │   │   └── informal
-    │   │   │       └── qna.yaml
-    │   │   │           attribution.txt
-    └── grounded
-        ├── editing
-        │   ├── grammar
-        │   │   └── qna.yaml
-        │   │       attribution.txt
-        │   └── spelling
-        │       └── qna.yaml
-        │           attribution.txt
-        └── summarization
-            └── wiki_insights
-                └── concise
-                    └── qna.yaml
-                        attribution.txt
+    │   │       └── qna.yaml
+    │   │           attribution.txt
+    └── grammar
+        └── qna.yaml
+        │   attribution.txt
+        └── spelling
+            └── qna.yaml
+                attribution.txt
 ```
 
-For an extensive example of this layout see, [taxonomy_tree_layout](https://github.com/instructlab/taxonomy/blob/main/docs/taxonomy_diagram.png) in the documentation folder.
+For an extensive example of this layout see, [taxonomy_tree_layout](docs/taxonomy_diagram.md) in the documentation folder.
 
 ## Contribute knowledge and skills to the taxonomy
 
